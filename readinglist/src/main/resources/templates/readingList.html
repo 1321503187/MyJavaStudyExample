@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script type="text/javascript">
+    function downloadfile(){
+        window.location.href="/UserExcelDownloads";
+    }
+</script>
+<head>
+    <title>Reading List</title>
+    <link rel="stylesheet" th:href="@{/style.css}"></link>
+</head>
+
+<body>
+<!--页面上方是读者的阅读列表中的图书清单-->
+<h2>Your Reading List</h2>
+<div th:unless="${#lists.isEmpty(books)}">
+    <dl th:each="book : ${books}">
+        <dt class="bookHeadline">
+            <span th:text="${book.bookName}">bookName</span> by
+            <span th:text="${book.author}">Author</span>
+            (PubTime: <span th:text="${book.pubTime}">Pub Time</span>)
+        </dt>
+        <dd class="bookReader">
+                      <span th:if="${book.Reader}"
+                            th:text="${book.Reader.readerName}">readerName</span>
+            <span th:if="${book.Reader eq null}">
+                            No Reader</span>
+        </dd>
+    </dl>
+</div>
+<div th:if="${#lists.isEmpty(books)}">
+    <p>You have no books in your book list</p>
+</div>
+
+<hr/>
+
+<!--下方是是一个表单，读者可以从这里添加新书-->
+<h3>Add a book</h3>
+<form method="POST" th:action="@{/addBook}">
+    <label for="bookName">Book Name:</label>
+    <input type="text" name="bookName" size="50"></input><br/>
+
+    <label for="author">Author:</label>
+    <input type="text" name="author" size="50"></input><br/>
+
+    <!--<label for="pubTime">Pub Time:</label>-->
+    <!--<input type="text" name="pubTime" size="50"></input><br/>-->
+
+    <label for="Reader">Reader:</label><br/>
+    <input type="text" name="readerId" size="50"></input><br/>
+
+    <input type="submit"></input>
+</form>
+
+<h3>Add a book Tranactional Test</h3>
+<form method="POST" th:action="@{/addBookTest}">
+    <label for="bookName">Book Name:</label>
+    <input type="text" name="bookName" size="50"></input><br/>
+
+    <label for="author">Author:</label>
+    <input type="text" name="author" size="50"></input><br/>
+
+    <!--<label for="pubTime">Pub Time:</label>-->
+    <!--<input type="text" name="pubTime" size="50"></input><br/>-->
+
+    <label for="Reader">Reader:</label><br/>
+    <input type="text" name="readerId" size="50"></input><br/>
+
+    <input type="submit"></input>
+</form>
+
+<h3>update a book</h3>
+<form method="POST" th:action="@{/updateBook}">
+    <label for="id">Book ID:</label><br/>
+    <input type="text" name="id" size="50"></input><br/>
+    <label for="bookName">Book Name:</label>
+    <input type="text" name="bookName" size="50"></input><br/>
+
+    <label for="author">Author:</label>
+    <input type="text" name="author" size="50"></input><br/>
+
+    <!--<label for="pubTime">Pub Time:</label>-->
+    <!--<input type="text" name="pubTime" size="50"></input><br/>-->
+
+    <label for="Reader">Reader:</label><br/>
+    <input type="text" name="readerId" size="50"></input><br/>
+
+    <input type="submit"></input>
+</form>
+
+<h3>del book</h3>
+<form method="POST" th:action="@{/delBook}">
+    <label for="id">Book ID:</label><br/>
+    <input type="text" name="id" size="50"></input><br/>
+
+    <input type="submit"></input>
+</form>
+
+<h3>search book</h3>
+<form method="POST" th:action="@{/searchBook}">
+    <label for="Reader">Reader:</label><br/>
+    <input type="text" name="readerId" size="50"></input><br/>
+
+    <input type="submit"></input>
+</form>
+
+<h3>Get One Book With Tags</h3>
+<form method="POST" th:action="@{/getOneBookWithTags}">
+    <label for="ID">Book Id:</label><br/>
+    <input type="text" name="id" size="50"></input><br/>
+
+    <input type="submit"></input>
+</form>
+
+<table border="0" style="margin-top:10px">
+    <tr>
+        <td><a href="#" onclick="downloadfile();">数据导出</a></td>
+    </tr>
+</table>
+
+</body>
+</html>
