@@ -2,21 +2,16 @@ package com.example.readinglist.controller;
 
 import com.example.readinglist.dto.Book;
 import com.example.readinglist.service.BookService;
+import com.example.readinglist.utils.ExportFileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,7 +23,6 @@ public class BookController {
 
     @RequestMapping(value = "/addBook", method = RequestMethod.POST)
     @ResponseBody
-    @Transactional
     public String addBook(Book book) {
         System.out.println("添加book："+book.toString());
         if (bookService.addBook(book) == 1){
@@ -40,7 +34,6 @@ public class BookController {
     //事务测试(rollbackfor参数默认遇到runtime exception或error时回滚
     // propagation参数默认为required,即支持当前事务，如果不存在就回滚)
     @RequestMapping(value = "/addBookTest", method = RequestMethod.POST)
-    @Transactional
     public String addBookTest(Book book) {
         log.info("#########  info  #########");
         System.out.println("添加book："+book.toString());
@@ -87,7 +80,6 @@ public class BookController {
 
     @RequestMapping(value = "/delBook", method = RequestMethod.POST)
     @ResponseBody
-    @Transactional
     public String deleteBook(Integer id) {
         if (bookService.deleteBook(id) == 1){
             return "success";
@@ -97,7 +89,6 @@ public class BookController {
 
     @RequestMapping(value = "/updateBook", method = RequestMethod.POST)
     @ResponseBody
-    @Transactional
     public String updateBook(Book book) {
         if (bookService.updateBook(book) == 1){
             return "success";
@@ -105,84 +96,52 @@ public class BookController {
         return "error";
     }
 
+    @GetMapping("/exportBookTxt")
+    @ResponseBody
+    public void exportBookTxt() {
+        List<Book> books = bookService.getAllBook();
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        String today = dateFormat.format(new Date());
+//        String pathName = "D:\\Work\\workSpace\\" + today;
+//        String fileName = "JD-" + today + ".txt";
+//        File dir = new File(pathName);
+//        File outFile = new File(dir,fileName);
+
+        if (books != null) {
+            ExportFileUtil<Book> exportFileUtil = new ExportFileUtil<>();
+            exportFileUtil.exportTxt("JD","D:\\Work\\workSpace\\", books);
+        }
+    }
+
     //导出excel
     @RequestMapping(value = "UserExcelDownloads", method = RequestMethod.GET)
-    public void userExcelDownloads(HttpServletResponse response) throws IOException {
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("书本表");
-
+    public void userExcelDownloads(HttpServletResponse response) {
         List<Book> bookList = bookService.getAllBook();
-
-        String fileName = "bookinf"  + ".xls";//设置要导出的文件的名字
-        //新增数据行，并且设置单元格数据
-
-        int rowNum = 1;
-
-        String[] headers = { "book_name", "author", "pub_time", "reader_id"};
-        //headers表示excel表中第一行的表头
-
-        HSSFRow row = sheet.createRow(0);
-        //在excel表中添加表头
-
-        for(int i=0;i<headers.length;i++){
-            HSSFCell cell = row.createCell(i);
-            HSSFRichTextString text = new HSSFRichTextString(headers[i]);
-            cell.setCellValue(text);
-        }
-
-        //在表中存放查询到的数据放入对应的列
-        System.out.println(bookList);
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        for (Book book : bookList) {
-            HSSFRow row1 = sheet.createRow(rowNum);
-            String pubTime = "";
-            if (book.getPubTime() != null){
-                pubTime = format.format(book.getPubTime());
+        if (bookList != null) {
+            try {
+                bookService.userExcelDownloads(response, bookList);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            row1.createCell(0).setCellValue(book.getBookName());
-            row1.createCell(1).setCellValue(book.getAuthor());
-            row1.createCell(2).setCellValue(pubTime);
-            row1.createCell(3).setCellValue(book.getReaderId());
-            rowNum++;
         }
-
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-        response.flushBuffer();
-        workbook.write(response.getOutputStream());
     }
 
     //导入excel
     @RequestMapping(value = "ExcelUploads", method = RequestMethod.GET)
     @ResponseBody
-    @Transactional
-    public String excelUploads() throws IOException {
-        System.out.println("开始导入-------------------");
-        int flag = 1;
-        //获取要导入的文件
-        HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(new File("D://Google下载//bookinf.xls")));
-        //获取工作簿
-        HSSFSheet sheet = workbook.getSheet("书本表");
-
-        System.out.println("读取数据-------------------");
-        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-            //获取行数据
-            HSSFRow row = sheet.getRow(i);
-
-            //将表格中的行数据封装到banner对象中
-            Book book = new Book();
-            book.setBookName(row.getCell(0).getStringCellValue());
-            book.setAuthor(row.getCell(1).getStringCellValue());
-            book.setPubTime(new Date());
-            book.setReaderId(0);
-
-
-            //调用插入方法
+    public String excelUploads() {
+        List<Book> books = new ArrayList<>();
+        try {
+            books = bookService.excelUploads();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //调用插入方法
+        for (Book book : books){
             if (bookService.addBook(book) != 1){
                 return "error";
             }
         }
-        System.out.println("导入结束-------------------");
         return "success";
     }
 }

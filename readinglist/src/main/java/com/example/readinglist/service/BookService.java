@@ -2,6 +2,9 @@ package com.example.readinglist.service;
 
 import com.example.readinglist.dto.Book;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public interface BookService {
@@ -18,4 +21,10 @@ public interface BookService {
     public List<Book> getAllBookByReader(Integer readerId);
 
     public Book getOneBookWithTags(Integer id);
+
+    public void exportTxt(List<Book> books, File dir, File outFile);
+
+    public void userExcelDownloads(HttpServletResponse response, List<Book> bookList) throws IOException;
+
+    public List<Book> excelUploads() throws IOException;
 }

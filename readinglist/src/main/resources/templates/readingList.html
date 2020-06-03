@@ -4,6 +4,10 @@
     function downloadfile(){
         window.location.href="/UserExcelDownloads";
     }
+
+    function exportTxt(){
+        window.location.href="/exportBookTxt";
+    }
 </script>
 <head>
     <title>Reading List</title>
@@ -114,7 +118,13 @@
 
 <table border="0" style="margin-top:10px">
     <tr>
-        <td><a href="#" onclick="downloadfile();">数据导出</a></td>
+        <td><a href="#" onclick="downloadfile();">excel数据导出</a></td>
+    </tr>
+</table>
+
+<table border="0" style="margin-top:10px">
+    <tr>
+        <td><a href="#" onclick="exportTxt();">txt导出</a></td>
     </tr>
 </table>
 
