@@ -9,8 +9,9 @@ Java学习示例
 	4、各个注解的对比
 	5、使用@Transactional进行事务的管理
 	6、Html页面与后端间的简单交互实现
-  7、模糊查询与分页查询实现
-  8、使用字符流将数据写入txt文件
+	7、模糊查询与分页查询实现
+	8、使用字符流将数据写入txt文件
+
 	
 二、springCloudTrain（IDEA+Maven+JDK1.8）
 
