@@ -3,6 +3,8 @@ package com.example.readinglist.controller;
 import com.example.readinglist.dto.Book;
 import com.example.readinglist.service.BookService;
 import com.example.readinglist.utils.ExportFileUtil;
+import com.example.readinglist.utils.PageInfo;
+import com.github.pagehelper.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,6 +63,23 @@ public class BookController {
             model.addAttribute("books", readingList);
         }
         return "readingList";
+    }
+
+    @RequestMapping(value = "/selectBook", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Book> selectBook(Book book) {
+        List<Book> readingList = bookService.selectBook(book);
+        return readingList;
+    }
+
+    @RequestMapping(value = "/findByPage", method = RequestMethod.GET)
+    @ResponseBody
+    public PageInfo<Book> findByPage(@RequestParam(defaultValue = "1",value = "currentPage") Integer pageNum,
+                                     @RequestParam(defaultValue = "1",value = "pageSize") Integer pageSize) {
+        Page<Book> readingList = bookService.findByPage(pageNum, pageSize);
+        // 需要把Page包装成PageInfo对象才能序列化。该插件也默认实现了一个PageInfo
+        PageInfo<Book> pageInfo = new PageInfo<>(readingList);
+        return pageInfo;
     }
 
     @RequestMapping(value = "/searchBook", method = RequestMethod.POST)

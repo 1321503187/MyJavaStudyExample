@@ -3,6 +3,8 @@ package com.example.readinglist.service.Impl;
 import com.example.readinglist.dto.Book;
 import com.example.readinglist.mapper.BookMapper;
 import com.example.readinglist.service.BookService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.apache.poi.hssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,29 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getAllBook() {
         return bookMapper.getAllBook();
+    }
+
+    /**
+     * 模糊查询实现
+     * @param book
+     * @return
+     */
+    @Override
+    public List<Book> selectBook(Book book) {
+        return bookMapper.selectBook(book);
+    }
+
+    /**
+     * 通过pageHelper插件实现分页查询
+     * @param pageNum 当前页
+     * @param pageSize 每页的数量
+     * @return
+     */
+    @Override
+    public Page<Book> findByPage(Integer pageNum, Integer pageSize) {
+        //用插件进行分页
+        PageHelper.startPage(pageNum, pageSize);
+        return bookMapper.findByPage();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.readinglist.mapper;
 
 import com.example.readinglist.dto.Book;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.mybatis.spring.annotation.MapperScan;
@@ -16,6 +17,10 @@ public interface BookMapper {
     public Book getBookById(@Param("id") Integer id);
 
     public List<Book> getAllBook();
+
+    public List<Book> selectBook(Book book);
+
+    public Page<Book> findByPage();
 
     public Book getOneBookWithTags(@Param("id") Integer id);
 

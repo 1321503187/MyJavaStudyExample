@@ -70,7 +70,28 @@
         WHERE id = #{id};
     </select>
 
+    <!--模糊查询-->
+    <select id="selectBook" resultType="com.example.readinglist.dto.Book">
+        <bind name="author" value="'%' + _parameter.author + '%'" />
+        SELECT *
+        from book
+        WHERE 1=1
+        /*使用concat拼接*/
+        <if test="bookName != null and bookName != ''">
+            AND book_name LIKE CONCAT(CONCAT('%',#{bookName},'%'))
+        </if>
+        /*使用bind标签*/
+        <if test="author != null and author != ''">
+            AND author LIKE #{author}
+        </if>
+    </select>
+
     <select id="getAllBook" resultType="com.example.readinglist.dto.Book">
+        SELECT *
+        from book
+    </select>
+
+    <select id="findByPage" resultType="com.example.readinglist.dto.Book">
         SELECT *
         from book
     </select>

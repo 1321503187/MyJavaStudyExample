@@ -108,6 +108,16 @@
     <input type="submit"></input>
 </form>
 
+<h3>模糊查询</h3>
+<form method="POST" th:action="@{/selectBook}">
+    <label for="bookName">Book Name:</label>
+    <input type="text" name="bookName" size="50"></input>
+    <label for="author">author:</label>
+    <input type="text" name="author" size="50"></input>
+
+    <input type="submit" value="search"></input>
+</form>
+
 <h3>Get One Book With Tags</h3>
 <form method="POST" th:action="@{/getOneBookWithTags}">
     <label for="ID">Book Id:</label><br/>

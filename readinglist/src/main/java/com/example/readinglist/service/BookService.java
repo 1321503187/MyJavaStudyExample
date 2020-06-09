@@ -1,6 +1,7 @@
 package com.example.readinglist.service;
 
 import com.example.readinglist.dto.Book;
+import com.github.pagehelper.Page;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -11,6 +12,10 @@ public interface BookService {
     public Book getBookById(Integer id);
 
     public List<Book> getAllBook();
+
+    public List<Book> selectBook(Book book);
+
+    public Page<Book> findByPage(Integer pageNum, Integer pageSize);
 
     public Integer addBook(Book book);
 
