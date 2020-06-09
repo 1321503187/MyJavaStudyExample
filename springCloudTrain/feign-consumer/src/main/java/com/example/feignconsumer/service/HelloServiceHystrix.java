@@ -1,4 +1,11 @@
 package com.example.feignconsumer.service;
 
-public class HelloServiceHystrix {
+import org.springframework.stereotype.Component;
+
+@Component
+public class HelloServiceHystrix implements HelloService {
+    @Override
+    public String hello() {
+        return "Hello fall back";
+    }
 }

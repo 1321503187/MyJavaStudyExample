@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: peer2 #ÇÐ»»ÅäÖÃ
+
+---
+#peer1×¢²áÖÐÐÄ
+server:
+  port: 1111
+spring:
+  application:
+    name: eureka-server
+  profiles: peer1
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:2222/eureka/
+---
+#peer2×¢²áÖÐÐÄ
+server:
+  port: 2222
+spring:
+  application:
+    name: eureka-server
+  profiles: peer2
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:1111/eureka/
